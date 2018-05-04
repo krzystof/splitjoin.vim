@@ -35,14 +35,55 @@ describe "elixir" do
     EOF
   end
 
-  describe "pipe" do
+  specify "single pipeline operator" do
     pending
-    # single pipe
-    # multiple line
+    # set_elixir_contents <<-EOF
+    #   a_function(with, args)
+    # EOF
+
+    # vim.search 'with'
+    # split
+
+    # assert_file_contents <<-EOF
+    #   with
+    #   |> a_function(args)
+    # EOF
+
+    # join
+
+    # assert_file_contents <<-EOF
+    #   a_function(with, args)
+    # EOF
   end
 
-  describe "list" do
+  describe "multiple pipeline operator" do
     pending
+  end
+
+  describe "assignement" do
+    pending
+  end
+
+  specify "list" do
+    set_elixir_contents <<-EOF
+      foo = [bar, baz]
+    EOF
+
+    vim.search 'bar'
+    split
+
+    assert_file_contents <<-EOF
+      foo = [
+        bar,
+        baz
+      ]
+    EOF
+
+    join
+
+    assert_file_contents <<-EOF
+      foo = [bar, baz]
+    EOF
   end
 
   describe "map" do

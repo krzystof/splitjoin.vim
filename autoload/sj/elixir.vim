@@ -40,3 +40,11 @@ function! sj#elixir#JoinDef()
   call sj#ReplaceLines(def_lineno, end_lineno, joined_line)
   return 1
 endfunction
+
+function! sj#elixir#SplitList()
+  return sj#SplitList('[', ']')
+endfunction
+
+function! sj#elixir#JoinList()
+  return sj#JoinList('[', ']')
+endfunction

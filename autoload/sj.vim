@@ -637,3 +637,58 @@ function! sj#ParseJsonObjectBody(from, to)
   call parser.Process()
   return parser.args
 endfunction
+
+function! sj#SplitList(start, end)
+  let lineno = line('.')
+  let indent = indent('.')
+
+  let [from, to] = sj#LocateBracesOnLine(a:start, a:end)
+
+  if from < 0 && to < 0
+    return 0
+  endif
+
+  let pairs = sj#ParseJsonObjectBody(from + 1, to - 1)
+
+  if len(pairs) < 1
+    return 0
+  endif
+
+  if sj#settings#Read('trailing_comma')
+    let body = a:start."\n".join(pairs, ",\n").",\n".a:end
+  else
+    let body = a:start."\n".join(pairs, ",\n")."\n".a:end
+  endif
+
+  call sj#ReplaceMotion('Va[', body)
+
+  for l in range(lineno + 1, lineno + len(items))
+    call sj#SetIndent(l, indent + &sw)
+  endfor
+
+  " closing bracket
+  let end_line = lineno + len(items) + 1
+  call sj#SetIndent(end_line, indent)
+
+  return 1
+endfunction
+
+function! sj#JoinList(start, end)
+  let line = getline('.')
+
+  if line !~ a:start . '\s*$'
+    return 0
+  endif
+
+  call search(a:start, 'c', line('.'))
+  let body = sj#GetMotion('Vi'.a:start)
+
+  let lines = split(body, "\n")
+  let lines = sj#TrimList(lines)
+  let body  = sj#Trim(join(lines, ' '))
+  let body  = substitute(body, ',\s*$', '', '')
+
+  call sj#ReplaceMotion('Va'.a:start, a:start.body.a:end)
+
+  return 1
+endfunction
