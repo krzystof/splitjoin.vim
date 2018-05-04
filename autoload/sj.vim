@@ -692,3 +692,30 @@ function! sj#JoinList(start, end)
 
   return 1
 endfunction
+
+function! sj#GetFirstParams()
+  let line = getline('.')
+  let line = substitute(line, '^\s*[^(]*', '', '')
+  let line = substitute(line, '\v^\((.*)\)$', '\1', '')
+
+  if line == ''
+    return 0
+  endif
+
+  if line !~ ','
+    return line
+  endif
+
+  let paren_count = 0
+  let first_arg = []
+
+  for part in split(line, ', ')
+    call add(first_arg, part)
+    let paren_count += len(substitute(part, '[^(]', '', 'g'))
+    let paren_count -= len(substitute(part, '[^)]', '', 'g'))
+
+    if paren_count == 0
+      return join(first_arg, ', ')
+    endif
+  endfor
+endfunction

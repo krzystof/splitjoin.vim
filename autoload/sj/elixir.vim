@@ -48,3 +48,23 @@ endfunction
 function! sj#elixir#JoinList()
   return sj#JoinList('[', ']')
 endfunction
+
+function! sj#elixir#SplitPipe()
+  if sj#SearchUnderCursor('\w*(\w') == 0
+    return 0
+  endif
+
+  let l:param = sj#GetFirstParams()
+
+  if l:param =~ 0
+    normal! iooooooooooooooooooooooo
+    return 0
+  endif
+
+  let l:func = substitute(getline('.'), l:param . ', ', '', '')
+  let l:second_line = '|> ' . l:func
+  let body = l:param . "\n" . l:second_line
+
+  call sj#ReplaceMotion('V', body)
+  return 1
+endfunction

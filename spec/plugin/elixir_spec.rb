@@ -36,24 +36,23 @@ describe "elixir" do
   end
 
   specify "single pipeline operator" do
-    pending
-    # set_elixir_contents <<-EOF
-    #   a_function(with, args)
-    # EOF
+    set_elixir_contents <<-EOF
+      a_function(with, args)
+    EOF
 
-    # vim.search 'with'
-    # split
+    vim.search 'fun'
+    split
 
-    # assert_file_contents <<-EOF
-    #   with
-    #   |> a_function(args)
-    # EOF
+    assert_file_contents <<-EOF
+      with
+      |> a_function(args)
+    EOF
 
-    # join
+    join
 
-    # assert_file_contents <<-EOF
-    #   a_function(with, args)
-    # EOF
+    assert_file_contents <<-EOF
+      a_function(with, args)
+    EOF
   end
 
   describe "multiple pipeline operator" do
