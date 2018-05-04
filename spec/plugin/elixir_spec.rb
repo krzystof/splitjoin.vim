@@ -9,8 +9,13 @@ describe "elixir" do
     vim.set(:shiftwidth, 2)
   end
 
-  specify "def" do
-    set_file_contents <<-EOF
+  def set_elixir_contents(content)
+    set_file_contents(content)
+    setup_elixir_filetype
+  end
+
+  specify "do blocks" do
+    set_elixir_contents <<-EOF
       def some_function(with, args), do: some_computation
     EOF
 
@@ -23,11 +28,11 @@ describe "elixir" do
       end
     EOF
 
-#     join
+    join
 
-#     assert_file_contents <<-EOF
-#       def some_function(with, args), do: some_computation
-#     EOF
+    assert_file_contents <<-EOF
+      def some_function(with, args), do: some_computation
+    EOF
   end
 
   describe "pipe" do

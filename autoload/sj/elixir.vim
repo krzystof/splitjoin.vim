@@ -1,6 +1,7 @@
 function! sj#elixir#SplitDef()
   let function_pattern = ',\s*do:'
   let line             = getline('.')
+  let base_indent      = indent('.')
 
   if line !~ function_pattern
     return 0
@@ -9,7 +10,7 @@ function! sj#elixir#SplitDef()
   let line = substitute(line, function_pattern, '\r', '')
   exe 's/'.function_pattern.'/ do\r/'
   call append(line('.'), 'end')
-  normal! =2=
+  call sj#SetIndent(line('.'), base_indent + &sw)
 
   return 1
 endfunction
