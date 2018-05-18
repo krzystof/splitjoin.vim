@@ -55,16 +55,28 @@ function! sj#elixir#SplitPipe()
   endif
 
   let l:param = sj#GetFirstParams()
-
   if l:param =~ 0
-    normal! iooooooooooooooooooooooo
     return 0
   endif
 
-  let l:func = substitute(getline('.'), l:param . ', ', '', '')
+  let l:func = substitute(getline('.'), l:param . '\%(, \)\?', '', '')
   let l:second_line = '|> ' . l:func
   let body = l:param . "\n" . l:second_line
-
   call sj#ReplaceMotion('V', body)
+  return 1
+endfunction
+
+function! sj#elixir#JoinPipe()
+  let l:nextline = getline(line('.') + 1)
+  if getline('.') =~ '^\s*$' || l:nextline !~ '^\s*|>'
+    return 0
+  endif
+
+  if l:nextline =~ '()$'
+    execute 'normal! ^y$dddwf("0p'
+  else
+    execute 'normal! ^y$dddwf("0pa, '
+  endif
+
   return 1
 endfunction

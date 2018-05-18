@@ -638,9 +638,10 @@ function! sj#ParseJsonObjectBody(from, to)
   return parser.args
 endfunction
 
-function! sj#SplitList(start, end)
+function! sj#SplitList(start, end, ...)
   let lineno = line('.')
   let indent = indent('.')
+  let trailing_comma = a:0 >= 1 ? a:1 : sj#settings#Read('trailing_comma')
 
   let [from, to] = sj#LocateBracesOnLine(a:start, a:end)
 
@@ -654,13 +655,13 @@ function! sj#SplitList(start, end)
     return 0
   endif
 
-  if sj#settings#Read('trailing_comma')
+  if trailing_comma
     let body = a:start."\n".join(pairs, ",\n").",\n".a:end
   else
     let body = a:start."\n".join(pairs, ",\n")."\n".a:end
   endif
 
-  call sj#ReplaceMotion('Va[', body)
+  call sj#ReplaceMotion('Va'.a:start, body)
 
   for l in range(lineno + 1, lineno + len(items))
     call sj#SetIndent(l, indent + &sw)

@@ -10,6 +10,7 @@ describe "php" do
   specify "arrays" do
     set_file_contents '<?php $foo = array("one" => "two", "three" => "four"); ?>'
 
+    vim.search 'one'
     split
 
     assert_file_contents <<-EOF

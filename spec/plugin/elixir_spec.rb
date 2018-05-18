@@ -35,24 +35,66 @@ describe "elixir" do
     EOF
   end
 
-  specify "single pipeline operator" do
-    set_elixir_contents <<-EOF
-      a_function(with, args)
-    EOF
+  describe "pipeline operator" do
+    specify "with 1 arg" do
+      set_elixir_contents <<-EOF
+        a_function(with)
+      EOF
 
-    vim.search 'fun'
-    split
+      vim.search 'with'
+      split
 
-    assert_file_contents <<-EOF
-      with
-      |> a_function(args)
-    EOF
+      assert_file_contents <<-EOF
+        with
+        |> a_function()
+      EOF
 
-    join
+      join
 
-    assert_file_contents <<-EOF
-      a_function(with, args)
-    EOF
+      assert_file_contents <<-EOF
+        a_function(with)
+      EOF
+    end
+
+    specify "with 2 args" do
+      set_elixir_contents <<-EOF
+        a_function(with, args)
+      EOF
+
+      vim.search 'with'
+      split
+
+      assert_file_contents <<-EOF
+        with
+        |> a_function(args)
+      EOF
+
+      join
+
+      assert_file_contents <<-EOF
+        a_function(with, args)
+      EOF
+    end
+
+    specify "with a nested function call" do
+      set_elixir_contents <<-EOF
+        a_function(with(some_other(func)), args)
+      EOF
+
+      vim.search 'with'
+      split
+
+      assert_file_contents <<-EOF
+        with(some_other(func))
+        |> a_function(args)
+      EOF
+
+      join
+
+      assert_file_contents <<-EOF
+        a_function(with(some_other(func)), args)
+      EOF
+    end
   end
 
   describe "multiple pipeline operator" do
